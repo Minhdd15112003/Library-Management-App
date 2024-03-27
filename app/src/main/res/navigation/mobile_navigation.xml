@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_qlphieu">
+
+    <fragment
+        android:id="@+id/nav_qlphieu"
+        android:name="ph25260.fpoly.asm.ui.QlphieuMuon.QlphieumuonFragment"
+        android:label="Quản lý phiếu mượn"
+        tools:layout="@layout/fragment_qlphieumuon" />
+
+    <fragment
+        android:id="@+id/nav_qlLoaiSach"
+        android:name="ph25260.fpoly.asm.ui.QLloaiSach.QLloaiSachFragment"
+        label="Quản lý loại sách"
+        tools:layout="@layout/fragment_q_lloai_sach" />
+
+  <fragment
+      android:id="@+id/nav_sach"
+      android:name="ph25260.fpoly.asm.ui.QLsach.QlsachFragment"
+        android:label="Quản lý sách"
+        tools:layout="@layout/fragment_qlsach" />
+
+    <fragment
+        android:id="@+id/nav_qlThanhVien"
+        android:name="ph25260.fpoly.asm.ui.QLthanhVien.QLthanhVienFragment"
+        android:label="quản lý thành viên"
+        tools:layout="@layout/fragment_q_lthanh_vien" />
+
+    <fragment
+        android:id="@+id/nav_topSach"
+        android:name="ph25260.fpoly.asm.ui.topSach.TopSachFragment"
+        label="Top Sách"
+        tools:layout="@layout/fragment_top_sach" />
+
+    <fragment
+        android:id="@+id/nav_doanhthu"
+        android:name="ph25260.fpoly.asm.ui.DoanhThu.DoanhThuFragment"
+        android:label="doanh thu"
+        tools:layout="@layout/fragment_doanh_thu" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="ph25260.fpoly.asm.ui.DoanhThu.DoanhThuFragment"
+        android:label="settings"
+        tools:layout="@layout/fragment_doanh_thu" />
+</navigation>
