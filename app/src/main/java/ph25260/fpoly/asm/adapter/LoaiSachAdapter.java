@@ -61,6 +61,7 @@ public class LoaiSachAdapter extends RecyclerView.Adapter<LoaiSachAdapter.viewho
             }
         });
     }
+
     private void showDialogUpdate(LoaiSach loaiSach) {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_loaisach, null);
@@ -121,9 +122,10 @@ public class LoaiSachAdapter extends RecyclerView.Adapter<LoaiSachAdapter.viewho
         });
         builder.show();
     }
+
     @Override
     public int getItemCount() {
-       if (list.size() > 0) {
+        if (list.size() > 0) {
             return list.size();
         }
         return 0;
@@ -131,10 +133,10 @@ public class LoaiSachAdapter extends RecyclerView.Adapter<LoaiSachAdapter.viewho
 
     public class
     viewholder extends RecyclerView.ViewHolder {
-         TextView txtMasv;
-         ImageView imgUpdate;
-         ImageView imgDelete;
-         TextView txtLoaiSach;
+        TextView txtMasv;
+        ImageView imgUpdate;
+        ImageView imgDelete;
+        TextView txtLoaiSach;
 
         public viewholder(@NonNull View itemView) {
             super(itemView);
@@ -145,6 +147,7 @@ public class LoaiSachAdapter extends RecyclerView.Adapter<LoaiSachAdapter.viewho
 
         }
     }
+
     public void reloadData() {
         this.list.clear();
         this.list.addAll(list);

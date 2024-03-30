@@ -1,15 +1,21 @@
 package ph25260.fpoly.asm.adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,9 +27,10 @@ import ph25260.fpoly.asm.dao.DaoLoaiSach;
 import ph25260.fpoly.asm.dao.DaoSach;
 import ph25260.fpoly.asm.model.LoaiSach;
 import ph25260.fpoly.asm.model.Sach;
+import ph25260.fpoly.asm.utils.CustomDialog;
 
 public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
-
+    private ArrayList<LoaiSach> loaiSachList;
     private final Context context;
     private final ArrayList<Sach> list;
     DaoSach daoSach;
@@ -50,12 +57,16 @@ public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
         holder.txtTenSach.setText(list.get(position).getTensach());
         holder.txtgiaSach.setText(list.get(position).getGiaSach());
         LoaiSach loaiSach = daoLoaiSach.getLoaiSachById(list.get(position).getLoaiSachId());
-        holder.txtLoaiSach.setText(loaiSach.getTenloai());
+        if (loaiSach != null) {
+            holder.txtLoaiSach.setText(loaiSach.getTenloai());
+        } else {
+            holder.txtLoaiSach.setText("Đã xóa");
+        }
 
         holder.imgUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogUpdate();
+                showDialogUpdate(list.get(position));
             }
         });
         holder.imgDelete.setOnClickListener(new View.OnClickListener() {
@@ -69,17 +80,69 @@ public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
 
     }
 
-    private void showDialogUpdate(LoaiSach loaiSach) {
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_add_sach, null);
+    private void showDialogUpdate(Sach sach) {
         EditText txtAddTenSachDialog;
         EditText txtAddgiaThueDialog;
         Spinner spnLoaiSach;
         Button btnthemA;
-        txtAddTenSachDialog = view.findViewById(R.id.txtAddTenSachDialog);
-        txtAddgiaThueDialog = view.findViewById(R.id.txtAddgiaThueDialog);
-        spnLoaiSach = view.findViewById(R.id.spnLoaiSach);
-        btnthemA = view.findViewById(R.id.btnthemA);
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_add_sach);
+        spnLoaiSach = dialog.findViewById(R.id.spnLoaiSach);
+        txtAddTenSachDialog = dialog.findViewById(R.id.txtAddTenSachDialog);
+        txtAddgiaThueDialog = dialog.findViewById(R.id.txtAddgiaThueDialog);
+        txtAddTenSachDialog.setText(sach.getTensach());
+        txtAddgiaThueDialog.setText(sach.getGiaSach());
+        btnthemA = dialog.findViewById(R.id.btnthemA);
+        loadSpinnerData(spnLoaiSach);
+        btnthemA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String tensach = txtAddTenSachDialog.getText().toString();
+                String giathue = txtAddgiaThueDialog.getText().toString();
+                String choosedTypeName = spnLoaiSach.getSelectedItem().toString();
+                int selectedId = 0;
+                for (LoaiSach x : daoLoaiSach.getAll()) {
+                    if (x.getTenloai().equals(choosedTypeName)) {
+                        selectedId = x.getId();
+                    }
+                }
+                if (tensach.isEmpty() || giathue.isEmpty()) {
+                    txtAddTenSachDialog.setError("Không được để trống");
+                    txtAddTenSachDialog.setError("Không được để trống");
+                    return;
+                }
+
+                sach.setTensach(tensach);
+                sach.setGiaSach(giathue);
+
+                if (daoSach.update(sach)) {
+                    list.addAll(daoSach.getAll());
+                    notifyDataSetChanged();
+                    Toast.makeText(context, "cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+        new CustomDialog().decorBackground(dialog);
+        dialog.show();
+    }
+
+    private void loadSpinnerData(Spinner spinner) {
+
+        // get all and fill to the drop down
+        loaiSachList = daoLoaiSach.getAll();
+        if (loaiSachList.size() <= 0) {
+            Toast.makeText(context, "Please create book category first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ArrayList<String> simpleName = new ArrayList<>();
+        for (LoaiSach x : loaiSachList) {
+            simpleName.add(x.getTenloai());
+        }
+
+        spinner.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, simpleName));
 
     }
 

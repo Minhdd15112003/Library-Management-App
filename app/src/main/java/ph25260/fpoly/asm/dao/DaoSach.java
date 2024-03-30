@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ph25260.fpoly.asm.database.Dbheper;
 import ph25260.fpoly.asm.model.LoaiSach;
@@ -37,6 +38,25 @@ public class DaoSach {
         return sachArrayList;
     }
 
+//    public Sach getSachById(String id) {
+//        Cursor cursor = db.query("qlsach", null, "id=?", new String[]{String.valueOf(id)}, null, null, null);
+//        if (cursor.moveToFirst()) {
+//            Sach sach = new Sach();
+//            sach.setId(cursor.getInt(0));
+//            sach.setTensach(cursor.getString(1));
+//            sach.setGiaSach(cursor.getString(2));
+//            sach.setLoaiSachId(cursor.getInt(3));
+//            return sach;
+//        }
+//        return null;
+//    }
+
+    public Sach getID(String id){
+        String sql = "SELECT * FROM qlsach WHERE id = ?";
+        List<Sach> list = getAll();
+        return list.get(0);
+    }
+
     public boolean insert(String tensach, String giaSach, int loaiSachId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensach", tensach);
@@ -60,5 +80,6 @@ public class DaoSach {
         long row = db.delete("qlsach", "id=?", new String[]{String.valueOf(id)});
         return (row > 0);
     }
+
 
 }

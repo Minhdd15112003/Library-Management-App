@@ -65,7 +65,6 @@ public class QLloaiSachFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_add_loaisach, null);
         builder.setView(view);
-        builder.setView(view);
         AlertDialog dialog = builder.create();
         dialog.setContentView(R.layout.dialog_add_loaisach);
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.editcustom);

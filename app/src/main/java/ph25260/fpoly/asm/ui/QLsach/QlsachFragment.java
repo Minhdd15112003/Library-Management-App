@@ -157,6 +157,5 @@ public class QlsachFragment extends Fragment {
         }
 
         spinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, simpleName));
-
     }
 }
