@@ -56,7 +56,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.viewholder> {
         holder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogDelete(list.get(position));
+                    showDialogDelete(list.get(position));
             }
         });
     }
@@ -114,8 +114,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.viewholder> {
 
     private void showDialogDelete(User user) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Delete");
-        builder.setMessage("Do you want to delete this user?");
+        builder.setTitle("Xác nhận xóa");
+        builder.setMessage("Bạn có chắc chắn muốn xóa không?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

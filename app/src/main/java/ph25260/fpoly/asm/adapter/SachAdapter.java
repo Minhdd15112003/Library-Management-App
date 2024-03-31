@@ -1,6 +1,7 @@
 package ph25260.fpoly.asm.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -55,12 +56,12 @@ public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
         daoLoaiSach = new DaoLoaiSach(context);
         holder.txtMasv.setText(list.get(position).getId() + "");
         holder.txtTenSach.setText(list.get(position).getTensach());
-        holder.txtgiaSach.setText(list.get(position).getGiaSach());
-        LoaiSach loaiSach = daoLoaiSach.getLoaiSachById(list.get(position).getLoaiSachId());
+        holder.txtgiaSach.setText(list.get(position).getGiaSach() + "");
+        LoaiSach loaiSach = daoLoaiSach.getID(String.valueOf(list.get(position).getLoaiSachId()));
         if (loaiSach != null) {
             holder.txtLoaiSach.setText(loaiSach.getTenloai());
         } else {
-            holder.txtLoaiSach.setText("Đã xóa");
+            holder.txtLoaiSach.setText("Không tồn tại");
         }
 
         holder.imgUpdate.setOnClickListener(new View.OnClickListener() {
@@ -72,12 +73,28 @@ public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
         holder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                daoSach.delete(list.get(position).getId());
-                list.remove(position);
-                notifyDataSetChanged();
+             dialogDelete(list.get(position));
             }
         });
 
+    }
+
+    private void dialogDelete(Sach sach) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Xác nhận xóa");
+        builder.setMessage("Bạn có chắc chắn muốn xóa không?");
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            if (daoSach.delete(sach.getId())) {
+                list.remove(sach);
+                notifyDataSetChanged();
+                Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Không", (dialog, which) -> {
+            dialog.dismiss();
+        });
     }
 
     private void showDialogUpdate(Sach sach) {
@@ -114,7 +131,7 @@ public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
                 }
 
                 sach.setTensach(tensach);
-                sach.setGiaSach(giathue);
+                sach.setGiaSach(Integer.parseInt(giathue));
 
                 if (daoSach.update(sach)) {
                     list.addAll(daoSach.getAll());

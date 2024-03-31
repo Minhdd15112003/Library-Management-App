@@ -100,8 +100,8 @@ public class LoaiSachAdapter extends RecyclerView.Adapter<LoaiSachAdapter.viewho
 
     private void showDialogDelete(LoaiSach loaiSach) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Delete");
-        builder.setMessage("Do you want to delete this user?");
+        builder.setTitle("Xác nhận xóa");
+        builder.setMessage("Bạn có chắc chắn muốn xóa không?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

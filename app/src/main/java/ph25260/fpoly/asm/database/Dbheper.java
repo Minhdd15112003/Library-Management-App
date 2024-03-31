@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class Dbheper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "users.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     public Dbheper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +32,7 @@ public class Dbheper extends SQLiteOpenHelper {
 
         String tbQlSach = "create table qlsach(id integer primary key autoincrement," +
                 "tensach text NOT NULL," +
-                "giaSach text NOT NULL," +
+                "giaSach integer NOT NULL," +
                 "loaiSachId integer REFERENCES loaisach(id))";
 
         db.execSQL(tbQlSach);
@@ -43,10 +43,34 @@ public class Dbheper extends SQLiteOpenHelper {
                 "tenSach text REFERENCES qlsach(tensach)," +
                 "loaiSachId integer REFERENCES qlsach(loaiSachId)," +
                 "giaSach integer REFERENCES qlsach(giaSach)," +
-                "ngayThue text NOT NULL," +
-                "trangThai boolean NOT NULL)";
+                "ngayThue DATE NOT NULL," +
+                "trangThai integer NOT NULL)";
 
         db.execSQL(tbPhieuMuon);
+
+        db.execSQL("INSERT INTO login (email, username, password, numberphone) VALUES\n" +
+                "    ('user3@email.com', 'user3', 'password3', '0345678901'),\n" +
+                "    ('user4@email.com', 'user4', 'password4', '0456789012'),\n" +
+                "    ('user5@email.com', 'user5', 'password5', '0567890123');\n");
+
+        db.execSQL("INSERT INTO loaisach (tenloai) VALUES\n" +
+                "    ('Lịch sử'),\n" +
+                "    ('Văn học'),\n" +
+                "    ('Nghệ thuật');\n");
+
+        db.execSQL("INSERT INTO qlsach (tensach, giaSach, loaiSachId) VALUES\n" +
+                "    ('Lược sử loài người', '220000', 2),\n" +
+                "    ('Nghệ thuật sống', '170000', 3),\n" +
+                "    ('Chiến tranh và hòa bình', '250000', 1),\n" +
+                "    ('Bắt trẻ đồng xanh', '190000', 4),\n" +
+                "    ('Hồn bướm mơ tiên', '160000', 5);");
+
+        db.execSQL("INSERT INTO phieumuon (nguoiMuon, idSach, tenSach, loaiSachId, giaSach, ngayThue, trangThai) VALUES\n" +
+                "    ('user3', 4, 'Lược sử loài người', 2, 220000, '2024-03-29', 0),\n" +
+                "    ('user4', 5, 'Nghệ thuật sống', 3, 170000, '2024-03-30', 1),\n" +
+                "    ('user5', 6, 'Chiến tranh và hòa bình', 1, 250000, '2024-03-27', 0),\n" +
+                "    ('user1', 7, 'Bắt trẻ đồng xanh', 4, 190000, '2024-03-31', 0),\n" +
+                "    ('user2', 8, 'Hồn bướm mơ tiên', 5, 160000, '2024-03-28', 1);\n");
     }
 
     @Override

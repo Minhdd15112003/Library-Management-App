@@ -35,15 +35,14 @@ public class DaoLoaiSach {
         cursor.close();
         return loaiSachArrayList;
     }
-    public LoaiSach getLoaiSachById(int id) {
-        Cursor cursor = db.query("loaisach", null, "id=?", new String[]{String.valueOf(id)}, null, null, null);
-        if (cursor.moveToFirst()) {
-            LoaiSach loaiSach = new LoaiSach();
-            loaiSach.setId(cursor.getInt(0));
-            loaiSach.setTenloai(cursor.getString(1));
-            return loaiSach;
+
+    public LoaiSach getID(String id){
+        List<LoaiSach> list = getAll();
+        if (!list.isEmpty()) {
+            return list.get(0);
+        } else {
+            return null;
         }
-        return null;
     }
 
     public long insert(String tenloai) {

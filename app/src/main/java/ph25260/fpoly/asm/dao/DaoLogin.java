@@ -21,7 +21,7 @@ public class DaoLogin {
         db = dbheper.getWritableDatabase();
     }
 
-    public User getUserById(String id) {
+    public User getUserById(int id) {
         Cursor cursor = db.query("login", null, "id=?", new String[]{String.valueOf(id)}, null, null, null);
         if (cursor.moveToFirst()) {
             User user = new User();
@@ -31,10 +31,13 @@ public class DaoLogin {
         return null;
     }
 
-    public User getID(String id){
-        String sql = "SELECT * FROM login WHERE id = ?";
+    public User getID(int id){
         List<User> list = getAllUsers();
-        return list.get(0);
+        if (!list.isEmpty()) {
+            return list.get(0);
+        } else {
+            return null;
+        }
     }
 
     public long addUser(String email, String username, String password, String numberphone) {

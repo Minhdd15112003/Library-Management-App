@@ -3,11 +3,14 @@ package ph25260.fpoly.asm.ui.QlphieuMuon;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +21,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import ph25260.fpoly.asm.R;
@@ -58,10 +65,13 @@ public class QlphieumuonFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_qlphieumuon, container, false);
         rcvPhieuMuon = view.findViewById(R.id.rcvPhieuMuon);
         fab = getActivity().findViewById(R.id.fab);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
         rcvPhieuMuon.setLayoutManager(layoutManager);
         daoPhieuMuon = new DaoPhieuMuon(getActivity());
         loadData();
+        if (rcvPhieuMuon != null) ;
+        rcvPhieuMuon.setLayoutManager(layoutManager);
+        rcvPhieuMuon.setLayoutManager(new GridLayoutManager(getActivity(), 1));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,23 +83,39 @@ public class QlphieumuonFragment extends Fragment {
     }
 
     private void showDialogAdd() {
+        PhieuMuon phieuMuon = new PhieuMuon();
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_add_phieumuon);
         Spinner spinnerTenNguoiMuon;
         Spinner spinnerTenSach;
-        TextView txtNgayMuon;
-        TextView txtTienThue;
         Button btnthemA;
+        Switch switchTrangThai;
+        TextView txtTrangThai;
 
+        switchTrangThai = dialog.findViewById(R.id.switchTrangThai);
+        txtTrangThai = dialog.findViewById(R.id.txtTrangThai);
         spinnerTenNguoiMuon = dialog.findViewById(R.id.spinnerTenNguoiMuon);
         spinnerTenSach = dialog.findViewById(R.id.spinnerTenSach);
-        txtNgayMuon = dialog.findViewById(R.id.txtNgayMuon);
-        txtTienThue = dialog.findViewById(R.id.txtTienThue);
         btnthemA = dialog.findViewById(R.id.btnthemA);
         daoLogin = new DaoLogin(getActivity());
         daoSach = new DaoSach(getActivity());
-        loadSpinnerUser(spinnerTenNguoiMuon);
-        loadSpinnerSach(spinnerTenSach);
+
+
+        userArrayList = (ArrayList<User>) daoLogin.getAllUsers();
+        ArrayList<String> listUser = new ArrayList<>();
+        for (User user : userArrayList) {
+            listUser.add(user.getUsername());
+        }
+        spinnerTenNguoiMuon.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listUser));
+
+        sachArrayList = (ArrayList<Sach>) daoSach.getAll();
+        ArrayList<String> listSach = new ArrayList<>();
+        for (Sach sach : sachArrayList) {
+            listSach.add(sach.getTensach());
+        }
+        spinnerTenSach.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listSach));
+
+
         if (spinnerTenSach.getCount() <= 0) {
             Toast.makeText(getContext(), "Vui lòng thêm ít nhất 1 sách !", Toast.LENGTH_SHORT).show();
             return;
@@ -100,35 +126,51 @@ public class QlphieumuonFragment extends Fragment {
             return;
         }
 
+        switchTrangThai.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (switchTrangThai.isChecked()) {
+                    txtTrangThai.setText("Đã trả");
+                    txtTrangThai.setTextColor(getResources().getColor(R.color.green));
+                } else {
+                    txtTrangThai.setTextColor(getResources().getColor(R.color.red));
+                    phieuMuon.setTrangThai(0);
+                    txtTrangThai.setText("Chưa trả");
+                }
+            }
+        });
+
         btnthemA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                // Get selected positions in the Spinners
+                int selectedUserPosition = spinnerTenNguoiMuon.getSelectedItemPosition();
+                int selectedSachPosition = spinnerTenSach.getSelectedItemPosition();
+
+                User user = userArrayList.get(spinnerTenNguoiMuon.getSelectedItemPosition());
+                Sach sach = sachArrayList.get(spinnerTenSach.getSelectedItemPosition());
+
+                // Create a PhieuMuon object
+                PhieuMuon phieuMuon = new PhieuMuon();
+                phieuMuon.setIdSach(sach.getId());
+                phieuMuon.setUsername(user.getUsername());
+                phieuMuon.setLoaiSachId(sach.getLoaiSachId());
+                phieuMuon.setTensach(sach.getTensach());
+                phieuMuon.setLoaiSachId(sach.getLoaiSachId());
+                phieuMuon.setGiaSach(Integer.parseInt(sach.getGiaSach()+ ""));
                 Date date = Calendar.getInstance().getTime();
-                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+                SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                 String ngaymuon = format.format(date);
+                phieuMuon.setNgayThue(ngaymuon);
+                phieuMuon.setTrangThai(switchTrangThai.isChecked() ? 1 : 0);
 
-                // Get selected user and book
-                User selectedUser = userArrayList.get(spinnerTenNguoiMuon.getSelectedItemPosition());
-                Sach selectedSach = sachArrayList.get(spinnerTenSach.getSelectedItemPosition());
-
-                // Get values from selected user and book
-                String nguoiMuon = selectedUser.getUsername();
-                int masach = selectedSach.getId();
-                String tensach = selectedSach.getTensach();
-                String loaisach = String.valueOf(selectedSach.getLoaiSachId());
-                int giaThue = Integer.parseInt(selectedSach.getGiaSach());
-
-                // Check if ngaymuon is null
-                if (ngaymuon == null) {
-                    Toast.makeText(getContext(), "Ngày mượn không được để trống", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                boolean check = daoPhieuMuon.insert(nguoiMuon, masach, tensach, loaisach, giaThue, ngaymuon, 0);
+                boolean check = daoPhieuMuon.insert(phieuMuon);
 
                 if (check) {
                     loadData();
-
+                    Log.d("accccccccccc", "onClick: " + phieuMuon.getIdSach());
                     dialog.dismiss();
                     Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
                 } else {
@@ -138,32 +180,17 @@ public class QlphieumuonFragment extends Fragment {
         });
         new CustomDialog().decorBackground(dialog);
         dialog.show();
+
+
     }
 
-    private void loadSpinnerUser(Spinner spinnerTenNguoiMuon) {
-        userArrayList = (ArrayList<User>) daoLogin.getAllUsers();
-        ArrayList<String> list = new ArrayList<>();
-        for (User user : userArrayList) {
-            list.add(user.getUsername());
-        }
-        spinnerTenNguoiMuon.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, list));
-    }
-
-    private void loadSpinnerSach(Spinner spinnerSach) {
-        sachArrayList = (ArrayList<Sach>) daoSach.getAll();
-        ArrayList<String> list = new ArrayList<>();
-        for (Sach sach : sachArrayList) {
-            list.add(sach.getTensach());
-        }
-        spinnerSach.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, list));
-    }
 
     private void loadData() {
         daoPhieuMuon = new DaoPhieuMuon(getContext());
         phieuMuonArrayList = daoPhieuMuon.getAll();
         phieuMuonAdapter = new PhieuMuonAdapter(getContext(), phieuMuonArrayList);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        rcvPhieuMuon.setLayoutManager(manager);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1);
+        rcvPhieuMuon.setLayoutManager(layoutManager);
         rcvPhieuMuon.setAdapter(phieuMuonAdapter);
     }
 }

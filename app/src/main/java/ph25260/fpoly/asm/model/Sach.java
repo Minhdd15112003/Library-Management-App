@@ -3,10 +3,10 @@ package ph25260.fpoly.asm.model;
 public class Sach {
     private int id;
     private String tensach;
-    private String giaSach;
+    private int giaSach;
     private int loaiSachId;
 
-    public Sach(int id, String tensach, String giaSach, int loaiSachId) {
+    public Sach(int id, String tensach, int giaSach, int loaiSachId) {
         this.id = id;
         this.tensach = tensach;
         this.giaSach = giaSach;
@@ -35,11 +35,11 @@ public class Sach {
         this.tensach = tensach;
     }
 
-    public String getGiaSach() {
+    public int getGiaSach() {
         return giaSach;
     }
 
-    public void setGiaSach(String giaSach) {
+    public void setGiaSach(int giaSach) {
         this.giaSach = giaSach;
     }
 

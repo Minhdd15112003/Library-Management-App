@@ -15,6 +15,7 @@ import java.util.Date;
         public PhieuMuon() {
         }
 
+
         public PhieuMuon(int id, int idSach, String username, String tensach, int giaSach, int loaiSachId, String ngayThue, int trangThai) {
             this.id = id;
             this.idSach = idSach;
@@ -26,8 +27,9 @@ import java.util.Date;
             this.trangThai = trangThai;
         }
 
-        public PhieuMuon(String nguoiMuon, int masach, String tensach, String loaisach, int giaThue, String ngaymuon, int i) {
+        public PhieuMuon(String nguoiMuon, int masach, String tensach, String loaisach, int giaThue, String ngaymuon, int trangthai) {
         }
+
 
         public int getId() {
             return id;
