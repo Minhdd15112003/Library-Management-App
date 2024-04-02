@@ -42,6 +42,7 @@ import ph25260.fpoly.asm.adapter.PhieuMuonAdapter;
 import ph25260.fpoly.asm.dao.DaoLogin;
 import ph25260.fpoly.asm.dao.DaoPhieuMuon;
 import ph25260.fpoly.asm.dao.DaoSach;
+import ph25260.fpoly.asm.model.LoaiSach;
 import ph25260.fpoly.asm.model.PhieuMuon;
 import ph25260.fpoly.asm.model.Sach;
 import ph25260.fpoly.asm.model.User;
@@ -58,6 +59,7 @@ public class QlphieumuonFragment extends Fragment {
     ArrayList<User> userArrayList;
     PhieuMuonAdapter phieuMuonAdapter;
     FloatingActionButton fab;
+    int selectedPosition = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -100,7 +102,6 @@ public class QlphieumuonFragment extends Fragment {
         daoLogin = new DaoLogin(getActivity());
         daoSach = new DaoSach(getActivity());
 
-
         userArrayList = (ArrayList<User>) daoLogin.getAllUsers();
         ArrayList<String> listUser = new ArrayList<>();
         for (User user : userArrayList) {
@@ -114,6 +115,18 @@ public class QlphieumuonFragment extends Fragment {
             listSach.add(sach.getTensach());
         }
         spinnerTenSach.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listSach));
+
+
+        spinnerTenSach.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedPosition = position;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         if (spinnerTenSach.getCount() <= 0) {
@@ -145,21 +158,13 @@ public class QlphieumuonFragment extends Fragment {
             public void onClick(View v) {
 
 
-                // Get selected positions in the Spinners
-                int selectedUserPosition = spinnerTenNguoiMuon.getSelectedItemPosition();
-                int selectedSachPosition = spinnerTenSach.getSelectedItemPosition();
-
                 User user = userArrayList.get(spinnerTenNguoiMuon.getSelectedItemPosition());
-                Sach sach = sachArrayList.get(spinnerTenSach.getSelectedItemPosition());
 
+                Sach sach = sachArrayList.get(spinnerTenSach.getSelectedItemPosition());
                 // Create a PhieuMuon object
                 PhieuMuon phieuMuon = new PhieuMuon();
+                phieuMuon.setIdUser(user.getId());
                 phieuMuon.setIdSach(sach.getId());
-                phieuMuon.setUsername(user.getUsername());
-                phieuMuon.setLoaiSachId(sach.getLoaiSachId());
-                phieuMuon.setTensach(sach.getTensach());
-                phieuMuon.setLoaiSachId(sach.getLoaiSachId());
-                phieuMuon.setGiaSach(Integer.parseInt(sach.getGiaSach()+ ""));
                 Date date = Calendar.getInstance().getTime();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                 String ngaymuon = format.format(date);
@@ -170,12 +175,12 @@ public class QlphieumuonFragment extends Fragment {
 
                 if (check) {
                     loadData();
-                    Log.d("accccccccccc", "onClick: " + phieuMuon.getIdSach());
                     dialog.dismiss();
                     Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
                 }
+                selectedPosition = 0;
             }
         });
         new CustomDialog().decorBackground(dialog);

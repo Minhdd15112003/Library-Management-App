@@ -4,10 +4,8 @@ import java.util.Date;
 
     public class PhieuMuon {
         private int id;
+        private int idUser;
         private int idSach;
-        private String username;
-        private String tensach;
-        private int giaSach;
         private int loaiSachId;
         private String ngayThue;
         private int trangThai;
@@ -16,20 +14,14 @@ import java.util.Date;
         }
 
 
-        public PhieuMuon(int id, int idSach, String username, String tensach, int giaSach, int loaiSachId, String ngayThue, int trangThai) {
+        public PhieuMuon(int id, int idUser, int idSach, int loaiSachId, String ngayThue, int trangThai) {
             this.id = id;
+            this.idUser = idUser;
             this.idSach = idSach;
-            this.username = username;
-            this.tensach = tensach;
-            this.giaSach = giaSach;
             this.loaiSachId = loaiSachId;
             this.ngayThue = ngayThue;
             this.trangThai = trangThai;
         }
-
-        public PhieuMuon(String nguoiMuon, int masach, String tensach, String loaisach, int giaThue, String ngaymuon, int trangthai) {
-        }
-
 
         public int getId() {
             return id;
@@ -39,36 +31,20 @@ import java.util.Date;
             this.id = id;
         }
 
+        public int getIdUser() {
+            return idUser;
+        }
+
+        public void setIdUser(int idUser) {
+            this.idUser = idUser;
+        }
+
         public int getIdSach() {
             return idSach;
         }
 
         public void setIdSach(int idSach) {
             this.idSach = idSach;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getTensach() {
-            return tensach;
-        }
-
-        public void setTensach(String tensach) {
-            this.tensach = tensach;
-        }
-
-        public int getGiaSach() {
-            return giaSach;
-        }
-
-        public void setGiaSach(int giaSach) {
-            this.giaSach = giaSach;
         }
 
         public int getLoaiSachId() {

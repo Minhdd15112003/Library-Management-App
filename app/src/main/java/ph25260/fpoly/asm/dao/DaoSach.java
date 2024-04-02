@@ -38,7 +38,31 @@ public class DaoSach {
         return sachArrayList;
     }
 
-    public Sach getID(String id){
+    public LoaiSach layThongTinById(String id) {
+        Cursor cursor = db.query("loaisach", null, "id=?", new String[]{id}, null, null, null);
+        if (cursor.moveToFirst()) {
+            LoaiSach loaiSach = new LoaiSach();
+            loaiSach.setId(cursor.getInt(0));
+            loaiSach.setTenloai(cursor.getString(1));
+            return loaiSach;
+        }
+        return null;
+    }
+
+    public Sach getSachByID(String id){
+        Cursor cursor = db.query("qlsach", null, "id=?", new String[]{id}, null, null, null);
+        if (cursor.moveToFirst()) {
+            Sach sach = new Sach();
+            sach.setId(cursor.getInt(0));
+            sach.setTensach(cursor.getString(1));
+            sach.setGiaSach(cursor.getInt(2));
+            sach.setLoaiSachId(cursor.getInt(3));
+            return sach;
+        }
+        return null;
+    }
+
+    public Sach getID(String id) {
         List<Sach> list = getAll();
         if (!list.isEmpty()) {
             return list.get(0);
@@ -46,6 +70,7 @@ public class DaoSach {
             return null;
         }
     }
+
     public boolean insert(String tensach, String giaSach, int loaiSachId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensach", tensach);

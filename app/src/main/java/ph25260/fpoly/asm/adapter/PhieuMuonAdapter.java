@@ -69,32 +69,36 @@ public class PhieuMuonAdapter extends RecyclerView.Adapter<PhieuMuonAdapter.view
     public void onBindViewHolder(@NonNull PhieuMuonAdapter.viewholder holder, @SuppressLint("RecyclerView") int position) {
 
         PhieuMuon phieuMuon = list.get(position);
-        daoSach = new DaoSach(context);
-        Sach sach = daoSach.getID(String.valueOf(phieuMuon.getId()));
-        daoLogin = new DaoLogin(context);
-        User user = daoLogin.getID(phieuMuon.getId());
+        Sach sach = daoSach.getSachByID(phieuMuon.getIdSach() + "");
+        LoaiSach loaiSach = daoSach.layThongTinById(sach.getLoaiSachId()+ "");
+        User user = daoLogin.getUserById(phieuMuon.getIdUser());
 
 
         holder.txtMaphieu.setText(list.get(position).getId() + "");
 
         if (user != null) {
-            holder.txtMasach.setText(list.get(position).getIdSach() + "");
-            holder.txtNguoiMuon.setText(list.get(position).getUsername());
+            holder.txtNguoiMuon.setText(user.getUsername());
         } else {
             holder.txtNguoiMuon.setText("Không tồn tại");
         }
 
         if (sach != null) {
-            holder.txtMasach.setText(list.get(position).getId() + "");
-            holder.txtTenSach.setText(list.get(position).getTensach());
-            holder.txtLoaiSach.setText(list.get(position).getLoaiSachId() + "");
-            holder.txtGiaThue.setText(list.get(position).getGiaSach() + "");
+            holder.txtMasach.setText(sach.getId() + "");
+            holder.txtTenSach.setText(sach.getTensach());
+            holder.txtLoaiSach.setText(loaiSach.getTenloai());
+            holder.txtGiaThue.setText(sach.getGiaSach() + "");
         } else {
             holder.txtMasach.setText("Không tồn tại");
             holder.txtTenSach.setText("Không tồn tại");
             holder.txtLoaiSach.setText("Không tồn tại");
             holder.txtGiaThue.setText("Không tồn tại");
         }
+//
+//        if (loaiSach != null) {
+//            holder.txtLoaiSach.setText(loaiSach.getTenloai());
+//        } else {
+//            holder.txtLoaiSach.setText("Không tồn tại");
+//        }
         holder.txtNgayThue.setText(list.get(position).getNgayThue());
 
         if (list.get(position).getTrangThai() == 1) {
@@ -159,11 +163,9 @@ public class PhieuMuonAdapter extends RecyclerView.Adapter<PhieuMuonAdapter.view
 
                 // Create a PhieuMuon object
                 PhieuMuon phieuMuon = new PhieuMuon();
-                phieuMuon.setUsername(selectedUser.getUsername());
+                phieuMuon.setIdUser(Integer.parseInt(selectedUser.getUsername()));
                 phieuMuon.setIdSach(selectedSach.getId());
-                phieuMuon.setTensach(selectedSach.getTensach());
                 phieuMuon.setLoaiSachId(Integer.parseInt(String.valueOf(selectedSach.getLoaiSachId())));
-                phieuMuon.setGiaSach(selectedSach.getGiaSach());
                 phieuMuon.setNgayThue(ngaymuon);
                 phieuMuon.setTrangThai(switchTrangThai.isChecked() ? 1 : 0);
 

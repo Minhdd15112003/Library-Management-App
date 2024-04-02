@@ -31,13 +31,10 @@ public class DaoPhieuMuon {
             do {
                 PhieuMuon phieuMuon = new PhieuMuon();
                 phieuMuon.setId(cursor.getInt(0));
-                phieuMuon.setIdSach(cursor.getInt(1));
-                phieuMuon.setUsername(cursor.getString(2));
-                phieuMuon.setTensach(cursor.getString(3));
-                phieuMuon.setLoaiSachId(cursor.getInt(4));
-                phieuMuon.setGiaSach(cursor.getInt(5));
-                phieuMuon.setNgayThue(cursor.getString(6));
-                phieuMuon.setTrangThai(cursor.getInt(7));
+                phieuMuon.setIdUser(cursor.getInt(1));
+                phieuMuon.setIdSach(cursor.getInt(2));
+                phieuMuon.setNgayThue(cursor.getString(3));
+                phieuMuon.setTrangThai(cursor.getInt(4));
                 phieuMuonArrayList.add(phieuMuon);
             } while (cursor.moveToNext());
         }
@@ -48,11 +45,8 @@ public class DaoPhieuMuon {
     public boolean insert(PhieuMuon phieuMuon) {
         db = dbheper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("nguoiMuon", phieuMuon.getUsername());
+        contentValues.put("idUser", phieuMuon.getIdUser());
         contentValues.put("idSach", phieuMuon.getIdSach());
-        contentValues.put("tenSach", phieuMuon.getTensach());
-        contentValues.put("loaiSachId", phieuMuon.getLoaiSachId());
-        contentValues.put("giaSach", phieuMuon.getGiaSach());
         contentValues.put("ngayThue", phieuMuon.getNgayThue());
         contentValues.put("trangThai", phieuMuon.getTrangThai());
         long row = db.insert("phieumuon", null, contentValues);
@@ -62,11 +56,8 @@ public class DaoPhieuMuon {
     public boolean update(PhieuMuon phieuMuon) {
         db = dbheper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("nguoiMuon", phieuMuon.getUsername());
+        contentValues.put("idUser", phieuMuon.getIdUser());
         contentValues.put("idSach", phieuMuon.getIdSach());
-        contentValues.put("tenSach", phieuMuon.getTensach());
-        contentValues.put("loaiSachId", phieuMuon.getLoaiSachId());
-        contentValues.put("giaSach", phieuMuon.getGiaSach());
         contentValues.put("ngayThue", phieuMuon.getNgayThue());
         contentValues.put("trangThai", phieuMuon.getTrangThai());
         long row = db.update("phieumuon", contentValues, "id=?", new String[]{String.valueOf(phieuMuon.getId())});
@@ -80,7 +71,7 @@ public class DaoPhieuMuon {
 
     public List<Top> getTop10() {
         List<Top> list = new ArrayList<>();
-        String query = "SELECT tenSach, COUNT(idSach) as soLuong " +
+        String query = "SELECT idSach, COUNT(idSach) as soLuong " +
                 "FROM phieumuon " +
                 "GROUP BY idSach " +
                 "ORDER BY soLuong DESC " +
@@ -98,11 +89,9 @@ public class DaoPhieuMuon {
         return list;
     }
 
-    public int getDoanhThu(String fromDate, String toDate) {
+    public int getDoanhThu(String fromDate, String toDate ) {
         int doanhThu = 0;
-        String query = "SELECT SUM(giaSach) " +
-                "FROM phieumuon " +
-                "WHERE ngayThue BETWEEN ? AND ?";
+        String query = "SELECT SUM(giasach) FROM qlsach WHERE id = (SELECT idsach FROM phieumuon WHERE ngaythue BETWEEN ? AND ?)";
         Cursor cursor = db.rawQuery(query, new String[]{fromDate, toDate});
         if (cursor.moveToFirst()) {
             doanhThu = cursor.getInt(0);

@@ -108,7 +108,7 @@ public class SachAdapter extends RecyclerView.Adapter<SachAdapter.viewholder> {
         txtAddTenSachDialog = dialog.findViewById(R.id.txtAddTenSachDialog);
         txtAddgiaThueDialog = dialog.findViewById(R.id.txtAddgiaThueDialog);
         txtAddTenSachDialog.setText(sach.getTensach());
-        txtAddgiaThueDialog.setText(sach.getGiaSach());
+        txtAddgiaThueDialog.setText(sach.getGiaSach() + "");
         btnthemA = dialog.findViewById(R.id.btnthemA);
         loadSpinnerData(spnLoaiSach);
         btnthemA.setOnClickListener(new View.OnClickListener() {
