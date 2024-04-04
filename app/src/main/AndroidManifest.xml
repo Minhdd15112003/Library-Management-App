@@ -13,16 +13,17 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AuthScreen.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.AuthScreen.RegisterActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".ui.AuthScreen.LoginActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ASM.NoActionBar" />
-
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ASM.NoActionBar" />
+        <activity
+            android:name=".WelComeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ASM.NoActionBar">
