@@ -85,13 +85,19 @@ public class PhieuMuonAdapter extends RecyclerView.Adapter<PhieuMuonAdapter.view
         if (sach != null) {
             holder.txtMasach.setText(sach.getId() + "");
             holder.txtTenSach.setText(sach.getTensach());
-            holder.txtLoaiSach.setText(loaiSach.getTenloai());
+//            holder.txtLoaiSach.setText(loaiSach.getTenloai());
             holder.txtGiaThue.setText(sach.getGiaSach() + "");
         } else {
             holder.txtMasach.setText("Không tồn tại");
             holder.txtTenSach.setText("Không tồn tại");
-            holder.txtLoaiSach.setText("Không tồn tại");
+//            holder.txtLoaiSach.setText("Không tồn tại");
             holder.txtGiaThue.setText("Không tồn tại");
+        }
+
+        if (loaiSach != null) {
+            holder.txtLoaiSach.setText(loaiSach.getTenloai());
+        } else {
+            holder.txtLoaiSach.setText("Không tồn tại");
         }
 //
 //        if (loaiSach != null) {
@@ -136,17 +142,32 @@ public class PhieuMuonAdapter extends RecyclerView.Adapter<PhieuMuonAdapter.view
         switchTrangThai = dialog.findViewById(R.id.switchTrangThai);
         txtTrangThai = dialog.findViewById(R.id.txtTrangThai);
         btnthemA = dialog.findViewById(R.id.btnthemA);
-        loadSpinnerSach(spinnerTenSach);
-        loadSpinnerUser(spinnerTenNguoiMuon);
 
+        switchTrangThai.setChecked(phieuMuon.getTrangThai() == 1);
+
+        userArrayList = (ArrayList<User>) daoLogin.getAllUsers();
+        ArrayList<String> listUser = new ArrayList<>();
+        for (User user : userArrayList) {
+            listUser.add(user.getUsername());
+        }
+        spinnerTenNguoiMuon.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, listUser));
+
+        sachArrayList = (ArrayList<Sach>) daoSach.getAll();
+        ArrayList<String> listSach = new ArrayList<>();
+        for (Sach sach : sachArrayList) {
+            listSach.add(sach.getTensach());
+        }
+        spinnerTenSach.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, listSach));
         switchTrangThai.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (switchTrangThai.isChecked()) {
                     txtTrangThai.setText("Đã trả");
+                    phieuMuon.setTrangThai(1);
                     txtTrangThai.setTextColor(context.getResources().getColor(R.color.green));
                 } else {
                     txtTrangThai.setTextColor(context.getResources().getColor(R.color.red));
+                    phieuMuon.setTrangThai(0);
                     txtTrangThai.setText("Chưa trả");
                 }
             }
@@ -162,15 +183,14 @@ public class PhieuMuonAdapter extends RecyclerView.Adapter<PhieuMuonAdapter.view
                 Sach selectedSach = sachArrayList.get(spinnerTenSach.getSelectedItemPosition());
 
                 // Create a PhieuMuon object
-                PhieuMuon phieuMuon = new PhieuMuon();
-                phieuMuon.setIdUser(Integer.parseInt(selectedUser.getUsername()));
+//                PhieuMuon phieuMuon = new PhieuMuon();
+                phieuMuon.setIdUser(selectedUser.getId());
                 phieuMuon.setIdSach(selectedSach.getId());
                 phieuMuon.setLoaiSachId(Integer.parseInt(String.valueOf(selectedSach.getLoaiSachId())));
                 phieuMuon.setNgayThue(ngaymuon);
                 phieuMuon.setTrangThai(switchTrangThai.isChecked() ? 1 : 0);
 
-                boolean check = daoPhieuMuon.update(phieuMuon);
-                if (check) {
+                if (daoPhieuMuon.update(phieuMuon)) {
                     loadData();
                     dialog.dismiss();
                     Toast.makeText(context, "Thêm thành công", Toast.LENGTH_SHORT).show();

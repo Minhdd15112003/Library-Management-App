@@ -1,10 +1,13 @@
 package ph25260.fpoly.asm.dao;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +63,9 @@ public class DaoPhieuMuon {
         contentValues.put("idSach", phieuMuon.getIdSach());
         contentValues.put("ngayThue", phieuMuon.getNgayThue());
         contentValues.put("trangThai", phieuMuon.getTrangThai());
-        long row = db.update("phieumuon", contentValues, "id=?", new String[]{String.valueOf(phieuMuon.getId())});
+
+        int row = db.update("phieumuon", contentValues, "id=?", new String[]{String.valueOf(phieuMuon.getId())});
+        Log.d(TAG + "coin card", "update: " + String.valueOf(phieuMuon.getId()));
         return (row > 0);
     }
 
